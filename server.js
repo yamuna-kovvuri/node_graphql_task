@@ -29,13 +29,6 @@ const schema = buildFederatedSchema({
  * */
 
  const server = app.listen(PORT);
-//  .then(() => {
-//   console.log(`
-//     Server is running!
-//     Listening on port `+PORT+`
-//     Explore at https://studio.apollographql.com/dev
-//   `);
-// });
 /**
  * List of all middlewares used in project cors, compression, helmet
  * */
