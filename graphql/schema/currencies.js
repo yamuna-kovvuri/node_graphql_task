@@ -4,25 +4,24 @@ module.exports=`
         uuid: String
         coin_name: String
         status: String
-        timestamp:String
+        price_timestamp:String
     }
 
     type PRICE_DATA {
-        uuid: Int
-        coin_id: Int
+        request_uuid: String
         currency: String
         price_timestamp: String
         price_date:String
         request_id:Int
+        status:String
     }
 
     type Mutation {
         createRequest(id: String!): USER_DATA
-        updatePriceStatus(request_id: Int!): PRICE_DATA
     }
 
     type Query {
-        getPriceDataById(uuid: String!): USER_DATA
+        getPriceDataById(uuid: String!): PRICE_DATA
     }
 `
 

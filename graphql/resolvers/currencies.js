@@ -6,6 +6,12 @@ const createRequest = async (_, args, ctx) => {
     try {
       const { user, headers } = ctx;
       const {id} = args;
+      // console.log(args)
+      // const { errors } = Validator.isSchemaValid({ data, schema: GetSampleShema });
+  
+      // if (errors) {
+      //   return { errors };
+      // }
       const response = await Currencies.createRequest(id);
       if (response) {
         return  response
@@ -19,6 +25,10 @@ const createRequest = async (_, args, ctx) => {
 //get Query by passing ID
 const getPriceDataById = async (_, args, ctx) => {
 try {
+    // const { errors } = Validator.isSchemaValid({ data, schema: GetSampleShema });
+    // if (errors) {
+    // return { errors };
+    // }
     console.log(args.uuid)
     const result = await Currencies.getPriceDataById(args.uuid);
     if (result) {

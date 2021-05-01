@@ -11,50 +11,60 @@ const { userRequests,priceData } = database;
 const getPriceDataById= async (uuid) =>{
   try
   {
-   
-    
     const data = await userRequests.findOne({
       where: {
         uuid: uuid
       }
-    });
-    if (data) {
-      const { dataValues :{uuid,coin_name} } = data;
+  });
+  if (data) {
+      const { dataValues :{uuid,coin_name,id,status} } = data;
       if(uuid)
       { 
-        // console.log(uuid,'data')
-        let response = await helper.getRequest({url:`${API_URL}${coin_name}`})
-        // let response = [];
-        if(response){
-          console.log(`${API_URL}${coin_name}`)
-          console.log(response)
-           const {currency,price,price_timestamp} = response.data[0]
-           response.uuid = uuid
-           const data1 = await priceData.create({ 
-             price: price, uuid: uuidv1(),currency:currency,coin_id:uuid
-            // createdAt: Date.now(), updatedAt:Date.now() 
-          })
-          if(data1)
+          if(status != "processed")
           {
-            const data3 = await userRequests.update({
-              status: 'processed'
-            },{
-              where: {uuid: uuid},
-            }
-            )
-            return response
+            let response = await helper.getRequest({url:`${API_URL}${coin_name}`})
+            if(response){
+                const {currency,price,price_timestamp,price_date,coin_id,coin_name} = response.data[0]
+                response.uuid = uuid
+                const data1 = await priceData.create({ 
+                  price: price, uuid: uuidv1(),currency:currency,coin_id:uuid,coin_name:coin_name,price_timestamp:price_timestamp,price_date:price_date,request_id:id
+              })
+              if(data1)
+              {
+                const data3 = await userRequests.update({
+                  status: 'processed'
+                },{
+                  where: {uuid: uuid},
+                }
+                )
+                const resObj =  response.data[0]
+                resObj.status = 'processed'
+                resObj.request_id = id
+                resObj.request_uuid = uuid
+                return resObj
+              }
+           }
           }
-          
-        }
-        else
-        {
-          return null
-        }
-
+          else{
+            const priceInfo = await priceData.findOne({
+              where: {
+                request_id: id
+              }
+            });
+            if (priceInfo) {
+              const resObj = priceInfo.dataValues
+              resObj.request_id = id
+              resObj.request_uuid = uuid
+              return resObj
+           }
+      }
+      }
+      else
+      {
+        return null
       }
      
-      // version = name;
-    }
+  }
    
   }
   catch(error)
